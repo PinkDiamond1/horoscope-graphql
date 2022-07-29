@@ -1,0 +1,465 @@
+﻿schema {
+  query: Query
+}
+
+type Account {
+  height: String
+  result: AccountResult
+}
+
+type AccountAuth {
+  _id: ID!
+  account: Account
+  address: String!
+  custom_info: CustomInfo!
+}
+
+type AccountBalances {
+  _id: ID!
+  address: String!
+  balances: [Coin]
+  custom_info: CustomInfo!
+}
+
+type AccountDelegations {
+  _id: ID!
+  address: String!
+  custom_info: CustomInfo!
+  delegation_responses: [DelegationResponse]
+}
+
+type AccountPubKey {
+  type: String
+  value: String
+}
+
+type AccountRedelegations {
+  _id: ID!
+  address: String!
+  custom_info: CustomInfo!
+  redelegation_responses: [RedelegationResponse]
+}
+
+type AccountResult {
+  type: String
+  value: AccountValue
+}
+
+type AccountSpendableBalances {
+  _id: ID!
+  address: String!
+  custom_info: CustomInfo!
+  spendable_balances: [Coin]
+}
+
+type AccountUnbonds {
+  _id: ID!
+  address: String!
+  custom_info: CustomInfo!
+  unbonding_responses: [UnbondingResponse]
+}
+
+type AccountValue {
+  account_number: String
+  address: String
+  public_key: AccountPubKey
+  sequence: String
+}
+
+type Attribute {
+  index: Boolean
+  key: String
+  value: String
+}
+
+type AuthInfo {
+  fee: Fee
+  signer_infos: [SignerInfo]
+}
+
+type Block {
+  _id: ID!
+  block: BlockDetail
+  block_id: BlockId
+  custom_info: CustomInfo!
+}
+
+type BlockData {
+  txs: [String]
+}
+
+type BlockDataEvidence {
+  evidence: [AWSJSON]
+}
+
+type BlockDetail {
+  data: BlockData
+  evidence: BlockDataEvidence
+  header: BlockHeader
+  last_commit: BlockLastCommit
+}
+
+type BlockHeader {
+  app_hash: String
+  chain_id: String
+  consensus_hash: String
+  data_hash: String
+  evidence_hash: String
+  height: Int
+  last_block_id: BlockId
+  last_commit_hash: String
+  last_results_hash: String
+  next_validators_hash: String
+  proposer_address: String
+  time: AWSDateTime
+  validators_hash: String
+  version: BlockHeaderVersion
+}
+
+type BlockHeaderVersion {
+  block: Int
+}
+
+type BlockId {
+  hash: String
+  parts: BlockIdPart
+}
+
+type BlockIdPart {
+  hash: String
+  total: Int
+}
+
+type BlockLastCommit {
+  block_id: BlockId
+  height: Int
+  round: Int
+  signatures: [Signature]
+}
+
+type Body {
+  extension_options: [AWSJSON]
+  memo: String
+  messages: [AWSJSON]
+  non_critical_extension_options: [AWSJSON]
+  timeout_height: String
+}
+
+type CW20Asset {
+  _id: ID!
+  asset_id: String
+  asset_info: AWSJSON
+  balance: String
+  code_id: String
+  constract_address: String
+  createdAt: AWSDateTime
+  custom_info: CustomInfo!
+  history: [String]
+  owner: String
+  token_id: String
+  updatedAt: AWSDateTime
+}
+
+type CW721Asset {
+  _id: ID!
+  asset_id: String
+  asset_info: AWSJSON
+  code_id: String
+  constract_address: String
+  createdAt: AWSDateTime
+  custom_info: CustomInfo!
+  history: [String]
+  owner: String
+  token_id: String
+  updatedAt: AWSDateTime
+}
+
+type Changes {
+  key: String
+  subspace: String
+  value: String
+}
+
+type CodeId {
+  _id: ID!
+  code_id: String
+  contract_type: String
+  createdAt: AWSDateTime
+  custom_info: CustomInfo!
+  status: String
+  updatedAt: AWSDateTime
+}
+
+type Coin {
+  amount: String
+  denom: String
+}
+
+type Commission {
+  commission_rates: CommissionRate
+  update_time: String
+}
+
+type CommissionRate {
+  max_change_rate: String
+  max_rate: String
+  rate: String
+}
+
+type CommunityPool {
+  _id: ID!
+  custom_info: CustomInfo!
+  pool: [Coin]
+}
+
+type ConsensusPubkey {
+  key: String
+  type: String
+}
+
+type Content {
+  amount: [Coin]
+  changes: [Changes]
+  description: String
+  recipient: String
+  title: String
+  type: String
+}
+
+type CustomInfo {
+  chain_id: String!
+  chain_name: String!
+}
+
+type Delegation {
+  delegator_address: String
+  shares: String
+  validator_address: String
+}
+
+type DelegationResponse {
+  balance: [Coin]
+  delegation: Delegation
+}
+
+type Deposit {
+  amount: [Coin]
+  depositor: String
+  proposal_id: String
+}
+
+type Description {
+  details: String
+  identity: String
+  moniker: String
+  security_contact: String
+  website: String
+}
+
+type Event {
+  attributes: [Attribute]
+  type: String
+}
+
+type Fee {
+  amount: [Coin]
+  gas_limit: String
+  granter: String
+  payer: String
+}
+
+type FinalTallyResult {
+  abstain: String
+  no: String
+  no_with_veto: String
+  yes: String
+}
+
+type Inflation {
+  _id: ID!
+  custom_info: CustomInfo!
+  inflation: String
+}
+
+type Log {
+  events: [Event]
+  log: String
+  msg_index: Int
+}
+
+type Mode {
+  mode: String
+}
+
+type ModeInfo {
+  single: Mode
+}
+
+type Param {
+  _id: ID!
+  custom_info: CustomInfo!
+  module: String
+  params: AWSJSON
+}
+
+type Pool {
+  _id: ID!
+  bonded_tokens: String
+  custom_info: CustomInfo!
+  not_bonded_tokens: String
+}
+
+type Proposal {
+  _id: ID!
+  content: Content
+  custom_info: CustomInfo!
+  deposit: [Deposit]
+  deposit_end_time: AWSDateTime
+  final_tally_result: FinalTallyResult
+  proposal_id: Int
+  status: String
+  submit_time: AWSDateTime
+  tally: FinalTallyResult
+  total_deposit: [Coin]
+  voting_end_time: AWSDateTime
+  voting_start_time: AWSDateTime
+}
+
+type PublicKey {
+  key: String
+  type: String
+}
+
+type Query {
+  accountAuth(address: String, chain_id: String, skip: Int, take: Int): [AccountAuth]
+  accountBalances(address: String, chain_id: String, skip: Int, take: Int): [AccountBalances]
+  accountDelegations(address: String, chain_id: String, skip: Int, take: Int): [AccountDelegations]
+  accountRedelegations(address: String, chain_id: String, skip: Int, take: Int): [AccountRedelegations]
+  accountSpendableBalances(address: String, chain_id: String, skip: Int, take: Int): [AccountSpendableBalances]
+  accountUnbonds(address: String, chain_id: String, skip: Int, take: Int): [AccountUnbonds]
+  block(chain_id: String, hash: String, skip: Int, take: Int): [Block]
+  codeId(chain_id: String, code_id: String, contract_type: String, skip: Int, status: String, take: Int): [CodeId]
+  communityPool(chain_id: String): [CommunityPool]
+  cw20Asset(chain_id: String, code_id: String, contract_address: String, owner: String, skip: Int, take: Int): [CW20Asset]
+  cw721Asset(chain_id: String, code_id: String, contract_address: String, owner: String, skip: Int, take: Int): [CW721Asset]
+  inflation(chain_id: String): [Inflation]
+  param(chain_id: String, module: String, skip: Int, take: Int): [Param]
+  pool(chain_id: String): [Pool]
+  proposal(chain_id: String, proposal_id: String, skip: Int, status: String, take: Int): [Proposal]
+  supply(chain_id: String): [Supply]
+  transaction(chain_id: String, hash: String, skip: Int, take: Int, type: String): [Transaction]
+  validator(chain_id: String, jailed: Boolean, operator_address: String, skip: Int, status: String, take: Int): [Validator]
+}
+
+type RedelegateEntry {
+  balance: String
+  redelegation_entry: RedelegationEntry
+}
+
+type Redelegation {
+  delegator_address: String
+  entries: [RedelegateEntry]
+  validator_dst_address: String
+  validator_src_address: String
+}
+
+type RedelegationEntry {
+  completion_time: String
+  creation_height: String
+  initial_balance: String
+  shares_dst: String
+}
+
+type RedelegationResponse {
+  entries: [RedelegateEntry]
+  redelegation: Redelegation
+}
+
+type Signature {
+  block_id_flag: Int
+  signature: String
+  timestamp: String
+  validator_address: String
+}
+
+type SignerInfo {
+  mode_info: ModeInfo
+  public_key: PublicKey
+  sequence: String
+}
+
+type Supply {
+  _id: ID!
+  custom_info: CustomInfo!
+  supply: [Coin]
+}
+
+type Transaction {
+  _id: ID!
+  custom_info: CustomInfo!
+  tx: TxInput
+  tx_response: TxResponse
+}
+
+type TxInput {
+  auth_info: AuthInfo
+  body: Body
+  signatures: [String]
+}
+
+type TxResponse {
+  code: String
+  codespace: String
+  data: String
+  events: [Event]
+  gas_used: String
+  gas_wanted: String
+  height: Int
+  info: String
+  logs: [Log]
+  raw_log: String
+  timestamp: AWSDateTime
+  tx: AWSJSON
+  txhash: String
+}
+
+type TxResult {
+  code: Int
+  codespace: String
+  data: String
+  events: [Attribute]
+  gas_used: String
+  gas_wanted: String
+  info: String
+  log: String
+}
+
+type UnbondingResponse {
+  delegator_address: String
+  entries: [UndelegateEntry]
+  validator_address: String
+}
+
+type UndelegateEntry {
+  balance: String
+  completion_time: String
+  creation_height: String
+  initial_balance: String
+}
+
+type Validator {
+  _id: ID!
+  commission: Commission
+  consensus_hex_address: String
+  consensus_pubkey: ConsensusPubkey
+  custom_info: CustomInfo!
+  delegator_shares: String
+  description: Description
+  jailed: Boolean
+  min_self_delegation: String
+  operator_address: String
+  status: String
+  tokens: String
+  unbonding_height: String
+  unbonding_time: String
+}
