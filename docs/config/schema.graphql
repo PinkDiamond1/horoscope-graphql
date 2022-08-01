@@ -2,11 +2,29 @@
   query: Query
 }
 
-type Account {
-  height: String
-  result: AccountResult
+# The query type, represents all of the available queries in the schema
+type Query {
+  accountAuth(address: String, chain_id: String, skip: Int, take: Int): [AccountAuth]
+  accountBalances(address: String, chain_id: String, skip: Int, take: Int): [AccountBalances]
+  accountDelegations(address: String, chain_id: String, skip: Int, take: Int): [AccountDelegations]
+  accountRedelegations(address: String, chain_id: String, skip: Int, take: Int): [AccountRedelegations]
+  accountSpendableBalances(address: String, chain_id: String, skip: Int, take: Int): [AccountSpendableBalances]
+  accountUnbonds(address: String, chain_id: String, skip: Int, take: Int): [AccountUnbonds]
+  block(chain_id: String, hash: String, skip: Int, take: Int): [Block]
+  codeId(chain_id: String, code_id: String, contract_type: String, skip: Int, status: String, take: Int): [CodeId]
+  communityPool(chain_id: String): [CommunityPool]
+  cw20Asset(chain_id: String, code_id: String, contract_address: String, owner: String, skip: Int, take: Int): [CW20Asset]
+  cw721Asset(chain_id: String, code_id: String, contract_address: String, owner: String, skip: Int, take: Int): [CW721Asset]
+  inflation(chain_id: String): [Inflation]
+  param(chain_id: String, module: String, skip: Int, take: Int): [Param]
+  pool(chain_id: String): [Pool]
+  proposal(chain_id: String, proposal_id: String, skip: Int, status: String, take: Int): [Proposal]
+  supply(chain_id: String): [Supply]
+  transaction(chain_id: String, hash: String, skip: Int, take: Int, type: String): [Transaction]
+  validator(chain_id: String, jailed: Boolean, operator_address: String, skip: Int, status: String, take: Int): [Validator]
 }
 
+# Horoscope DocumentDB models
 type AccountAuth {
   _id: ID!
   account: Account
@@ -28,21 +46,11 @@ type AccountDelegations {
   delegation_responses: [DelegationResponse]
 }
 
-type AccountPubKey {
-  type: String
-  value: String
-}
-
 type AccountRedelegations {
   _id: ID!
   address: String!
   custom_info: CustomInfo!
   redelegation_responses: [RedelegationResponse]
-}
-
-type AccountResult {
-  type: String
-  value: AccountValue
 }
 
 type AccountSpendableBalances {
@@ -57,6 +65,140 @@ type AccountUnbonds {
   address: String!
   custom_info: CustomInfo!
   unbonding_responses: [UnbondingResponse]
+}
+
+type Block {
+  _id: ID!
+  block: BlockDetail
+  block_id: BlockId
+  custom_info: CustomInfo!
+}
+
+type CW20Asset {
+  _id: ID!
+  asset_id: String
+  asset_info: AWSJSON
+  balance: String
+  code_id: String
+  constract_address: String
+  createdAt: AWSDateTime
+  custom_info: CustomInfo!
+  history: [String]
+  owner: String
+  token_id: String
+  updatedAt: AWSDateTime
+}
+
+type CW721Asset {
+  _id: ID!
+  asset_id: String
+  asset_info: AWSJSON
+  code_id: String
+  constract_address: String
+  createdAt: AWSDateTime
+  custom_info: CustomInfo!
+  history: [String]
+  owner: String
+  token_id: String
+  updatedAt: AWSDateTime
+}
+
+type CodeId {
+  _id: ID!
+  code_id: String
+  contract_type: String
+  createdAt: AWSDateTime
+  custom_info: CustomInfo!
+  status: String
+  updatedAt: AWSDateTime
+}
+
+type CommunityPool {
+  _id: ID!
+  custom_info: CustomInfo!
+  pool: [Coin]
+}
+
+type Inflation {
+  _id: ID!
+  custom_info: CustomInfo!
+  inflation: String
+}
+
+type Param {
+  _id: ID!
+  custom_info: CustomInfo!
+  module: String
+  params: AWSJSON
+}
+
+type Pool {
+  _id: ID!
+  bonded_tokens: String
+  custom_info: CustomInfo!
+  not_bonded_tokens: String
+}
+
+type Proposal {
+  _id: ID!
+  content: Content
+  custom_info: CustomInfo!
+  deposit: [Deposit]
+  deposit_end_time: AWSDateTime
+  final_tally_result: FinalTallyResult
+  proposal_id: Int
+  status: String
+  submit_time: AWSDateTime
+  tally: FinalTallyResult
+  total_deposit: [Coin]
+  voting_end_time: AWSDateTime
+  voting_start_time: AWSDateTime
+}
+
+type Supply {
+  _id: ID!
+  custom_info: CustomInfo!
+  supply: [Coin]
+}
+
+type Transaction {
+  _id: ID!
+  custom_info: CustomInfo!
+  tx: TxInput
+  tx_response: TxResponse
+}
+
+type Validator {
+  _id: ID!
+  commission: Commission
+  consensus_hex_address: String
+  consensus_pubkey: ConsensusPubkey
+  custom_info: CustomInfo!
+  delegator_shares: String
+  description: Description
+  jailed: Boolean
+  min_self_delegation: String
+  operator_address: String
+  status: String
+  tokens: String
+  unbonding_height: String
+  unbonding_time: String
+}
+
+# Scalar types
+type Account {
+  height: String
+  result: AccountResult
+}
+
+type AccountPubKey {
+  type: String
+  value: String
+}
+
+type AccountResult {
+  type: String
+  value: AccountValue
 }
 
 type AccountValue {
@@ -75,13 +217,6 @@ type Attribute {
 type AuthInfo {
   fee: Fee
   signer_infos: [SignerInfo]
-}
-
-type Block {
-  _id: ID!
-  block: BlockDetail
-  block_id: BlockId
-  custom_info: CustomInfo!
 }
 
 type BlockData {
@@ -145,49 +280,10 @@ type Body {
   timeout_height: String
 }
 
-type CW20Asset {
-  _id: ID!
-  asset_id: String
-  asset_info: AWSJSON
-  balance: String
-  code_id: String
-  constract_address: String
-  createdAt: AWSDateTime
-  custom_info: CustomInfo!
-  history: [String]
-  owner: String
-  token_id: String
-  updatedAt: AWSDateTime
-}
-
-type CW721Asset {
-  _id: ID!
-  asset_id: String
-  asset_info: AWSJSON
-  code_id: String
-  constract_address: String
-  createdAt: AWSDateTime
-  custom_info: CustomInfo!
-  history: [String]
-  owner: String
-  token_id: String
-  updatedAt: AWSDateTime
-}
-
 type Changes {
   key: String
   subspace: String
   value: String
-}
-
-type CodeId {
-  _id: ID!
-  code_id: String
-  contract_type: String
-  createdAt: AWSDateTime
-  custom_info: CustomInfo!
-  status: String
-  updatedAt: AWSDateTime
 }
 
 type Coin {
@@ -204,12 +300,6 @@ type CommissionRate {
   max_change_rate: String
   max_rate: String
   rate: String
-}
-
-type CommunityPool {
-  _id: ID!
-  custom_info: CustomInfo!
-  pool: [Coin]
 }
 
 type ConsensusPubkey {
@@ -275,12 +365,6 @@ type FinalTallyResult {
   yes: String
 }
 
-type Inflation {
-  _id: ID!
-  custom_info: CustomInfo!
-  inflation: String
-}
-
 type Log {
   events: [Event]
   log: String
@@ -295,60 +379,9 @@ type ModeInfo {
   single: Mode
 }
 
-type Param {
-  _id: ID!
-  custom_info: CustomInfo!
-  module: String
-  params: AWSJSON
-}
-
-type Pool {
-  _id: ID!
-  bonded_tokens: String
-  custom_info: CustomInfo!
-  not_bonded_tokens: String
-}
-
-type Proposal {
-  _id: ID!
-  content: Content
-  custom_info: CustomInfo!
-  deposit: [Deposit]
-  deposit_end_time: AWSDateTime
-  final_tally_result: FinalTallyResult
-  proposal_id: Int
-  status: String
-  submit_time: AWSDateTime
-  tally: FinalTallyResult
-  total_deposit: [Coin]
-  voting_end_time: AWSDateTime
-  voting_start_time: AWSDateTime
-}
-
 type PublicKey {
   key: String
   type: String
-}
-
-type Query {
-  accountAuth(address: String, chain_id: String, skip: Int, take: Int): [AccountAuth]
-  accountBalances(address: String, chain_id: String, skip: Int, take: Int): [AccountBalances]
-  accountDelegations(address: String, chain_id: String, skip: Int, take: Int): [AccountDelegations]
-  accountRedelegations(address: String, chain_id: String, skip: Int, take: Int): [AccountRedelegations]
-  accountSpendableBalances(address: String, chain_id: String, skip: Int, take: Int): [AccountSpendableBalances]
-  accountUnbonds(address: String, chain_id: String, skip: Int, take: Int): [AccountUnbonds]
-  block(chain_id: String, hash: String, skip: Int, take: Int): [Block]
-  codeId(chain_id: String, code_id: String, contract_type: String, skip: Int, status: String, take: Int): [CodeId]
-  communityPool(chain_id: String): [CommunityPool]
-  cw20Asset(chain_id: String, code_id: String, contract_address: String, owner: String, skip: Int, take: Int): [CW20Asset]
-  cw721Asset(chain_id: String, code_id: String, contract_address: String, owner: String, skip: Int, take: Int): [CW721Asset]
-  inflation(chain_id: String): [Inflation]
-  param(chain_id: String, module: String, skip: Int, take: Int): [Param]
-  pool(chain_id: String): [Pool]
-  proposal(chain_id: String, proposal_id: String, skip: Int, status: String, take: Int): [Proposal]
-  supply(chain_id: String): [Supply]
-  transaction(chain_id: String, hash: String, skip: Int, take: Int, type: String): [Transaction]
-  validator(chain_id: String, jailed: Boolean, operator_address: String, skip: Int, status: String, take: Int): [Validator]
 }
 
 type RedelegateEntry {
@@ -386,19 +419,6 @@ type SignerInfo {
   mode_info: ModeInfo
   public_key: PublicKey
   sequence: String
-}
-
-type Supply {
-  _id: ID!
-  custom_info: CustomInfo!
-  supply: [Coin]
-}
-
-type Transaction {
-  _id: ID!
-  custom_info: CustomInfo!
-  tx: TxInput
-  tx_response: TxResponse
 }
 
 type TxInput {
@@ -445,21 +465,4 @@ type UndelegateEntry {
   completion_time: String
   creation_height: String
   initial_balance: String
-}
-
-type Validator {
-  _id: ID!
-  commission: Commission
-  consensus_hex_address: String
-  consensus_pubkey: ConsensusPubkey
-  custom_info: CustomInfo!
-  delegator_shares: String
-  description: Description
-  jailed: Boolean
-  min_self_delegation: String
-  operator_address: String
-  status: String
-  tokens: String
-  unbonding_height: String
-  unbonding_time: String
 }

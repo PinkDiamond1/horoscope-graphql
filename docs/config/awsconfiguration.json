@@ -1,0 +1,16 @@
+﻿{
+    "UserAgent": "aws-amplify-cli/0.1.0",
+    "Version": "1.0",
+    "IdentityManager": {
+        "Default": {}
+    },
+    "AppSync": {
+        "Default": {
+            "ApiUrl": "https://tfrbmwurpfghvidiczmpxemyey.appsync-api.ap-southeast-1.amazonaws.com/graphql",
+            "Region": "ap-southeast-1",
+            "AuthMode": "API_KEY",
+            "ApiKey": "<your-api-key>",
+            "ClientDatabasePrefix": "HoroscopeGraphQL_API_KEY"
+        }
+    }
+}
