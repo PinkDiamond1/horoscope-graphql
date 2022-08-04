@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.1183.0",
     "dotenv": "^16.0.1",
-    "fs": "0.0.1-security",
     "mongodb": "^4.8.1"
   },
   "devDependencies": {},

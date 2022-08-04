@@ -1,5 +1,4 @@
 const mongo = require('mongodb');
-const fs = require('fs');
 require('dotenv').config();
 
 exports.handler = async (event, context) => {
