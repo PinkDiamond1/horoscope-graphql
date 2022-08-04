@@ -74,7 +74,7 @@ exports.handler = async (event, context) => {
     if (event.arguments.operator_address) query.operator_address = event.arguments.operator_address;
     if (event.arguments.jailed) query.jailed = event.arguments.jailed;
     if (event.arguments.chain_id) query['custom_info.chain_id'] = event.arguments.chain_id;
-    const limit = event.arguments.take || 100;
+    const limit = (!event.arguments.take || event.arguments.take > 100) ? 100 : event.arguments.take;
     const skip = event.arguments.skip ? event.arguments.skip * limit : 0;
     console.log("query is:", query);
     console.log("page index is:", skip);
