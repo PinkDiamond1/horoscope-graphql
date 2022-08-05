@@ -5,11 +5,16 @@
   "main": "index.js",
   "dependencies": {
     "dotenv": "^16.0.1",
-    "mongodb": "^4.8.1"
+    "mongodb": "^4.8.1",
+    "redis": "^4.2.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -rf dist && esbuild index.js --entry-names=[dir]/[name]/index --bundle --minify --sourcemap --platform=node --target=node16.14 --outdir=dist",
+    "package": "cd dist && for f in * ; do ([ -d \"$f\" ] && cd $f && zip ../$f.zip *) ; done",
+    "package:unbundled": "rm -rf node_modules unbundled.zip && npm i --only=prod && zip -r unbundled.zip index.js node_modules/* .env",
+    "package:large": "rm -rf node_modules large.zip && npm i && zip -r large.zip src/* node_modules/*"
   },
   "author": "",
   "license": "ISC"
