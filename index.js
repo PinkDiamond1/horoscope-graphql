@@ -1,12 +1,6 @@
 const mongo = require('mongodb');
 require('dotenv').config();
-const redis = require('redis');
-const publisher = redis.createClient({
-    url: process.env.REDIS_URI,
-    username: process.env.REDIS_USERNAME,
-    password: process.env.REDIS_PASSWORD,
-    database: process.env.REDIS_DB_NUMBER,
-});
+const Bull = require('bull');
 
 exports.handler = async (event, context) => {
     console.log("Received event {}", JSON.stringify(event, 3));
@@ -16,11 +10,25 @@ exports.handler = async (event, context) => {
     let query = {};
     let result;
 
-    let [client, redisPublisher] = await Promise.all([
-        connectToDB(),
-        publisher.connect()
-    ]);
-    publisher.publish(process.env.REDIS_PUBLISH_KEY, event.headers['x-api-key']);
+    const apiKeyQueue = new Bull(
+        process.env.REDIS_BULL_KEY,
+        {
+            redis: {
+                host: process.env.REDIS_HOST,
+                port: process.env.REDIS_PORT,
+                username: process.env.REDIS_USERNAME,
+                password: process.env.REDIS_PASSWORD,
+                db: process.env.REDIS_DB_NUMBER,
+            },
+            prefix: process.env.REDIS_BULL_KEY,
+            defaultJobOptions: {
+                removeOnComplete: true,
+            }
+        }
+    );
+    apiKeyQueue.add({ apiKey: event.headers['x-api-key'] });
+
+    let client = await connectToDB();
     const db = client.db('aura_indexer_dev');
     const [
         accountAuthCollection,

@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "bull": "^4.8.5",
     "dotenv": "^16.0.1",
-    "mongodb": "^4.8.1",
-    "redis": "^4.2.0"
+    "mongodb": "^4.8.1"
   },
   "devDependencies": {},
   "scripts": {
