@@ -31,12 +31,7 @@ exports.handler = async (event, context) => {
     let client = await connectToDB();
     const db = client.db('aura_indexer_dev');
     const [
-        accountAuthCollection,
-        accountBalancesCollection,
-        accountSpendableBalancesCollection,
-        accountDelegationsCollection,
-        accountRedelegationsCollection,
-        accountUnbondsCollection,
+        accountInfoCollection,
         blockCollection,
         codeIdCollection,
         communityPoolCollection,
@@ -51,12 +46,7 @@ exports.handler = async (event, context) => {
         validatorCollection,
     ]
         = await Promise.all([
-            db.collection("account_auth"),
-            db.collection("account_balances"),
-            db.collection("account_spendable_balances"),
-            db.collection("account_delegations"),
-            db.collection("account_redelegations"),
-            db.collection("account_unbonds"),
+            db.collection("account_info"),
             db.collection("block"),
             db.collection("code_id"),
             db.collection("community_pool"),
@@ -100,58 +90,43 @@ exports.handler = async (event, context) => {
     console.log("page size is:", limit);
 
     switch (event.field) {
-        case Query.account_auth:
-            result = await accountAuthCollection.find(query, { limit, skip }).toArray();
-            return result;
-        case Query.account_balances:
-            result = await accountBalancesCollection.find(query, { limit, skip }).toArray();
-            return result;
-        case Query.account_spendable_balances:
-            result = await accountSpendableBalancesCollection.find(query, { limit, skip }).toArray();
-            return result;
-        case Query.account_delegations:
-            result = await accountDelegationsCollection.find(query, { limit, skip }).toArray();
-            return result;
-        case Query.account_redelegations:
-            result = await accountRedelegationsCollection.find(query, { limit, skip }).toArray();
-            return result;
-        case Query.account_unbonds:
-            result = await accountUnbondsCollection.find(query, { limit, skip }).toArray();
-            return result;
+        case Query.account_info:
+            result = await accountInfoCollection.find(query, { limit, skip }).toArray();
+            break;
         case Query.block:
             result = await blockCollection.find(query, { limit, skip }).toArray();
-            return result;
+            break;
         case Query.code_id:
             result = await codeIdCollection.find(query, { limit, skip }).toArray();
-            return result;
+            break;
         case Query.community_pool:
             result = await communityPoolCollection.find(query, { limit, skip }).toArray();
-            return result;
+            break;
         case Query.cw20_asset:
             result = await cw20AssetCollection.find(query, { limit, skip }).toArray();
-            return result;
+            break;
         case Query.cw721_asset:
             result = await cw721AssetCollection.find(query, { limit, skip }).toArray();
-            return result;
+            break;
         case Query.inflation:
             result = await inflationCollection.find(query, { limit, skip }).toArray();
-            return result;
+            break;
         case Query.param:
             result = await paramCollection.find(query, { limit, skip }).toArray();
-            return result;
+            break;
         case Query.pool:
             result = await poolCollection.find(query, { limit, skip }).toArray();
-            return result;
+            break;
         case Query.proposal:
             result = await proposalCollection.find(query, { limit, skip }).toArray();
             result.map(res => {
                 res.content.type = res.content['@type'];
                 delete res.content['@type'];
             });
-            return result;
+            break;
         case Query.supply:
             result = await supplyCollection.find(query, { limit, skip }).toArray();
-            return result;
+            break;
         case Query.transaction:
             result = await transactionCollection.find(query, { limit, skip }).toArray();
             result.map(res => {
@@ -160,15 +135,17 @@ exports.handler = async (event, context) => {
                     delete signer.public_key['@type'];
                 });
             });
-            return result;
+            break;
         case Query.validator:
             result = await validatorCollection.find(query, { limit, skip }).toArray();
             result.map(res => {
                 res.consensus_pubkey.type = res.consensus_pubkey['@type'];
                 delete res.consensus_pubkey['@type'];
             });
-            return result;
+            break;
     }
+    client.close();
+    return result;
 };
 
 async function connectToDB() {
@@ -181,12 +158,7 @@ async function connectToDB() {
 };
 
 const Query = {
-    account_auth: "getAccountAuth",
-    account_balances: "getAccountBalances",
-    account_spendable_balances: "getAccountSpendableBalances",
-    account_delegations: "getAccountDelegations",
-    account_redelegations: "getAccountRedelegations",
-    account_unbonds: "getAccountUnbonds",
+    account_info: "getAccountInfo",
     block: "getBlock",
     code_id: "getCodeId",
     community_pool: "getCommunityPool",
