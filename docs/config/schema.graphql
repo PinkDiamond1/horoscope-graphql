@@ -1,468 +1,605 @@
 ﻿schema {
-  query: Query
+	query: Query
 }
 
-# The query type, represents all of the available queries in the schema
 type Query {
-  accountAuth(address: String, chain_id: String, skip: Int, take: Int): [AccountAuth]
-  accountBalances(address: String, chain_id: String, skip: Int, take: Int): [AccountBalances]
-  accountDelegations(address: String, chain_id: String, skip: Int, take: Int): [AccountDelegations]
-  accountRedelegations(address: String, chain_id: String, skip: Int, take: Int): [AccountRedelegations]
-  accountSpendableBalances(address: String, chain_id: String, skip: Int, take: Int): [AccountSpendableBalances]
-  accountUnbonds(address: String, chain_id: String, skip: Int, take: Int): [AccountUnbonds]
-  block(chain_id: String, hash: String, skip: Int, take: Int): [Block]
-  codeId(chain_id: String, code_id: String, contract_type: String, skip: Int, status: String, take: Int): [CodeId]
-  communityPool(chain_id: String): [CommunityPool]
-  cw20Asset(chain_id: String, code_id: String, contract_address: String, owner: String, skip: Int, take: Int): [CW20Asset]
-  cw721Asset(chain_id: String, code_id: String, contract_address: String, owner: String, skip: Int, take: Int): [CW721Asset]
-  inflation(chain_id: String): [Inflation]
-  param(chain_id: String, module: String, skip: Int, take: Int): [Param]
-  pool(chain_id: String): [Pool]
-  proposal(chain_id: String, proposal_id: String, skip: Int, status: String, take: Int): [Proposal]
-  supply(chain_id: String): [Supply]
-  transaction(chain_id: String, hash: String, skip: Int, take: Int, type: String): [Transaction]
-  validator(chain_id: String, jailed: Boolean, operator_address: String, skip: Int, status: String, take: Int): [Validator]
+	accountInfo(
+		address: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [AccountInfo]
+		@aws_auth(cognito_groups: ["Customers"])
+	accountStatistics(
+		address: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [AccountStatistics]
+		@aws_auth(cognito_groups: ["Customers"])
+	block(
+		hash: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [Block]
+		@aws_auth(cognito_groups: ["Customers"])
+	codeId(
+		code_id: String,
+		contract_type: String,
+		status: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [CodeId]
+		@aws_auth(cognito_groups: ["Customers"])
+	communityPool(chain_id: String): [CommunityPool]
+		@aws_auth(cognito_groups: ["Customers"])
+	cw20Asset(
+		code_id: String,
+		contract_address: String,
+		owner: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [CW20Asset]
+		@aws_auth(cognito_groups: ["Customers"])
+	cw721Asset(
+		code_id: String,
+		contract_address: String,
+		owner: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [CW721Asset]
+		@aws_auth(cognito_groups: ["Customers"])
+	dailyTxStatistics(
+		date: AWSDateTime,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [DailyTxStatistics]
+		@aws_auth(cognito_groups: ["Customers"])
+	delayJob(
+		address: String,
+		type: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [DelayJob]
+		@aws_auth(cognito_groups: ["Customers"])
+	ibcDenom(hash: String, chain_id: String): [IBCDenom]
+		@aws_auth(cognito_groups: ["Customers"])
+	inflation(chain_id: String): [Inflation]
+		@aws_auth(cognito_groups: ["Customers"])
+	param(
+		module: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [Param]
+		@aws_auth(cognito_groups: ["Customers"])
+	pool(chain_id: String): [Pool]
+		@aws_auth(cognito_groups: ["Customers"])
+	proposal(
+		proposal_id: String,
+		status: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [Proposal]
+		@aws_auth(cognito_groups: ["Customers"])
+	smartContracts(
+		code_id: Int,
+		contract_hash: String,
+		creator_address: String,
+		tx_hash: String,
+		height: Int,
+		contract_name: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [SmartContracts]
+		@aws_auth(cognito_groups: ["Customers"])
+	supply(chain_id: String): [Supply]
+		@aws_auth(cognito_groups: ["Customers"])
+	transaction(
+		type: String,
+		hash: String,
+		height: Int,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [Transaction]
+		@aws_auth(cognito_groups: ["Customers"])
+	validator(
+		operator_address: String,
+		status: String,
+		jailed: Boolean,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [Validator]
+		@aws_auth(cognito_groups: ["Customers"])
+	vote(
+		voter_address: String,
+		proposal_id: Int,
+		answer: String,
+		tx_hash: String,
+		chain_id: String,
+		skip: Int,
+		take: Int
+	): [Vote]
+		@aws_auth(cognito_groups: ["Customers"])
 }
 
-# Horoscope DocumentDB models
-type AccountAuth {
-  _id: ID!
-  account: Account
-  address: String!
-  custom_info: CustomInfo!
-}
-
-type AccountBalances {
-  _id: ID!
-  address: String!
-  balances: [Coin]
-  custom_info: CustomInfo!
-}
-
-type AccountDelegations {
-  _id: ID!
-  address: String!
-  custom_info: CustomInfo!
-  delegation_responses: [DelegationResponse]
-}
-
-type AccountRedelegations {
-  _id: ID!
-  address: String!
-  custom_info: CustomInfo!
-  redelegation_responses: [RedelegationResponse]
-}
-
-type AccountSpendableBalances {
-  _id: ID!
-  address: String!
-  custom_info: CustomInfo!
-  spendable_balances: [Coin]
-}
-
-type AccountUnbonds {
-  _id: ID!
-  address: String!
-  custom_info: CustomInfo!
-  unbonding_responses: [UnbondingResponse]
-}
-
-type Block {
-  _id: ID!
-  block: BlockDetail
-  block_id: BlockId
-  custom_info: CustomInfo!
-}
-
-type CW20Asset {
-  _id: ID!
-  asset_id: String
-  asset_info: AWSJSON
-  balance: String
-  code_id: String
-  constract_address: String
-  createdAt: AWSDateTime
-  custom_info: CustomInfo!
-  history: [String]
-  owner: String
-  token_id: String
-  updatedAt: AWSDateTime
-}
-
-type CW721Asset {
-  _id: ID!
-  asset_id: String
-  asset_info: AWSJSON
-  code_id: String
-  constract_address: String
-  createdAt: AWSDateTime
-  custom_info: CustomInfo!
-  history: [String]
-  owner: String
-  token_id: String
-  updatedAt: AWSDateTime
-}
-
-type CodeId {
-  _id: ID!
-  code_id: String
-  contract_type: String
-  createdAt: AWSDateTime
-  custom_info: CustomInfo!
-  status: String
-  updatedAt: AWSDateTime
-}
-
-type CommunityPool {
-  _id: ID!
-  custom_info: CustomInfo!
-  pool: [Coin]
-}
-
-type Inflation {
-  _id: ID!
-  custom_info: CustomInfo!
-  inflation: String
-}
-
-type Param {
-  _id: ID!
-  custom_info: CustomInfo!
-  module: String
-  params: AWSJSON
-}
-
-type Pool {
-  _id: ID!
-  bonded_tokens: String
-  custom_info: CustomInfo!
-  not_bonded_tokens: String
-}
-
-type Proposal {
-  _id: ID!
-  content: Content
-  custom_info: CustomInfo!
-  deposit: [Deposit]
-  deposit_end_time: AWSDateTime
-  final_tally_result: FinalTallyResult
-  proposal_id: Int
-  status: String
-  submit_time: AWSDateTime
-  tally: FinalTallyResult
-  total_deposit: [Coin]
-  voting_end_time: AWSDateTime
-  voting_start_time: AWSDateTime
-}
-
-type Supply {
-  _id: ID!
-  custom_info: CustomInfo!
-  supply: [Coin]
-}
-
-type Transaction {
-  _id: ID!
-  custom_info: CustomInfo!
-  tx: TxInput
-  tx_response: TxResponse
-}
-
-type Validator {
-  _id: ID!
-  commission: Commission
-  consensus_hex_address: String
-  consensus_pubkey: ConsensusPubkey
-  custom_info: CustomInfo!
-  delegator_shares: String
-  description: Description
-  jailed: Boolean
-  min_self_delegation: String
-  operator_address: String
-  status: String
-  tokens: String
-  unbonding_height: String
-  unbonding_time: String
-}
-
-# Scalar types
 type Account {
-  height: String
-  result: AccountResult
+	height: String
+	result: AWSJSON
 }
 
-type AccountPubKey {
-  type: String
-  value: String
+type AccountInfo {
+	_id: ID!
+	address: String!
+	account_auth: Account
+	account_balances: [Coin]
+	account_delegations: [DelegationResponse]
+	account_redelegations: [RedelegationResponse]
+	account_spendable_balances: [Coin]
+	account_unbonding: [UnbondingResponse]
+	account_claimed_rewards: [Reward]
+	custom_info: CustomInfo!
 }
 
-type AccountResult {
-  type: String
-  value: AccountValue
-}
-
-type AccountValue {
-  account_number: String
-  address: String
-  public_key: AccountPubKey
-  sequence: String
+type AccountStatistics {
+	_id: ID!
+	address: String
+	per_day: [DailyStats]
+	one_day: DailyStats
+	three_days: DailyStats
+	seven_days: DailyStats
+	custom_info: CustomInfo!
 }
 
 type Attribute {
-  index: Boolean
-  key: String
-  value: String
+	key: String
+	value: String
+	index: Boolean
 }
 
 type AuthInfo {
-  fee: Fee
-  signer_infos: [SignerInfo]
+	signer_infos: [SignerInfo]
+	fee: Fee
+}
+
+type Block {
+	_id: ID!
+	block_id: BlockId
+	block: BlockDetail
+	custom_info: CustomInfo!
 }
 
 type BlockData {
-  txs: [String]
+	txs: [String]
 }
 
 type BlockDataEvidence {
-  evidence: [AWSJSON]
+	evidence: [AWSJSON]
 }
 
 type BlockDetail {
-  data: BlockData
-  evidence: BlockDataEvidence
-  header: BlockHeader
-  last_commit: BlockLastCommit
+	header: BlockHeader
+	data: BlockData
+	evidence: BlockDataEvidence
+	last_commit: BlockLastCommit
 }
 
 type BlockHeader {
-  app_hash: String
-  chain_id: String
-  consensus_hash: String
-  data_hash: String
-  evidence_hash: String
-  height: Int
-  last_block_id: BlockId
-  last_commit_hash: String
-  last_results_hash: String
-  next_validators_hash: String
-  proposer_address: String
-  time: AWSDateTime
-  validators_hash: String
-  version: BlockHeaderVersion
+	version: BlockHeaderVersion
+	chain_id: String
+	height: Int
+	time: AWSDateTime
+	last_block_id: BlockId
+	last_commit_hash: String
+	data_hash: String
+	validators_hash: String
+	next_validators_hash: String
+	consensus_hash: String
+	app_hash: String
+	last_results_hash: String
+	evidence_hash: String
+	proposer_address: String
 }
 
 type BlockHeaderVersion {
-  block: Int
+	block: Int
 }
 
 type BlockId {
-  hash: String
-  parts: BlockIdPart
+	hash: String
+	parts: BlockIdPart
 }
 
 type BlockIdPart {
-  hash: String
-  total: Int
+	total: Int
+	hash: String
 }
 
 type BlockLastCommit {
-  block_id: BlockId
-  height: Int
-  round: Int
-  signatures: [Signature]
+	height: Int
+	round: Int
+	block_id: BlockId
+	signatures: [Signature]
 }
 
 type Body {
-  extension_options: [AWSJSON]
-  memo: String
-  messages: [AWSJSON]
-  non_critical_extension_options: [AWSJSON]
-  timeout_height: String
+	messages: [AWSJSON]
+	memo: String
+	timeout_height: String
+	extension_options: [AWSJSON]
+	non_critical_extension_options: [AWSJSON]
+}
+
+type CW20Asset {
+	_id: ID!
+	asset_id: String
+	code_id: String
+	asset_info: AWSJSON
+	constract_address: String
+	token_id: String
+	owner: String
+	balance: String
+	history: [String]
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+	custom_info: CustomInfo!
+}
+
+type CW721Asset {
+	_id: ID!
+	asset_id: String
+	code_id: String
+	asset_info: AWSJSON
+	constract_address: String
+	token_id: String
+	owner: String
+	history: [String]
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+	custom_info: CustomInfo!
 }
 
 type Changes {
-  key: String
-  subspace: String
-  value: String
+	subspace: String
+	key: String
+	value: String
+}
+
+type CodeId {
+	_id: ID!
+	code_id: String
+	status: String
+	contract_type: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+	custom_info: CustomInfo!
 }
 
 type Coin {
-  amount: String
-  denom: String
+	amount: String
+	denom: String
 }
 
 type Commission {
-  commission_rates: CommissionRate
-  update_time: String
+	commission_rates: CommissionRate
+	update_time: String
 }
 
 type CommissionRate {
-  max_change_rate: String
-  max_rate: String
-  rate: String
+	rate: String
+	max_rate: String
+	max_change_rate: String
+}
+
+type CommunityPool {
+	_id: ID!
+	pool: [Coin]
+	custom_info: CustomInfo!
 }
 
 type ConsensusPubkey {
-  key: String
-  type: String
+	type: String
+	key: String
 }
 
 type Content {
-  amount: [Coin]
-  changes: [Changes]
-  description: String
-  recipient: String
-  title: String
-  type: String
+	type: String
+	title: String
+	description: String
+	changes: [Changes]
+	recipient: String
+	amount: [Coin]
 }
 
 type CustomInfo {
-  chain_id: String!
-  chain_name: String!
+	chain_id: String!
+	chain_name: String!
+}
+
+type DailyStats {
+	total_sent_tx: Stats
+	total_received_tx: Stats
+	total_sent_amount: Stats
+	total_received_amount: Stats
+}
+
+type DailyTxStatistics {
+	_id: ID!
+	daily_txs: Int
+	daily_active_addresses: Int
+	unique_addresses: Int
+	date: AWSDateTime
+	custom_info: CustomInfo!
+}
+
+type DelayJob {
+	_id: ID!
+	content: AWSJSON
+	type: String
+	expire_time: AWSDateTime
+	indexes: String
+	custom_info: CustomInfo!
 }
 
 type Delegation {
-  delegator_address: String
-  shares: String
-  validator_address: String
+	delegator_address: String
+	validator_address: String
+	shares: String
 }
 
 type DelegationResponse {
-  balance: [Coin]
-  delegation: Delegation
+	delegation: Delegation
+	balance: [Coin]
 }
 
 type Deposit {
-  amount: [Coin]
-  depositor: String
-  proposal_id: String
+	proposal_id: String
+	depositor: String
+	amount: [Coin]
 }
 
 type Description {
-  details: String
-  identity: String
-  moniker: String
-  security_contact: String
-  website: String
+	moniker: String
+	identity: String
+	website: String
+	details: String
+	security_contact: String
 }
 
 type Event {
-  attributes: [Attribute]
-  type: String
+	type: String
+	attributes: [Attribute]
 }
 
 type Fee {
-  amount: [Coin]
-  gas_limit: String
-  granter: String
-  payer: String
+	amount: [Coin]
+	gas_limit: String
+	payer: String
+	granter: String
 }
 
 type FinalTallyResult {
-  abstain: String
-  no: String
-  no_with_veto: String
-  yes: String
+	yes: String
+	no: String
+	abstain: String
+	no_with_veto: String
+}
+
+type IBCDenom {
+	_id: ID!
+	hash: String
+	denom: String
+}
+
+type Inflation {
+	_id: ID!
+	inflation: String
+	custom_info: CustomInfo!
 }
 
 type Log {
-  events: [Event]
-  log: String
-  msg_index: Int
+	msg_index: Int
+	log: String
+	events: [Event]
 }
 
 type Mode {
-  mode: String
+	mode: String
 }
 
 type ModeInfo {
-  single: Mode
+	single: Mode
+}
+
+type Param {
+	_id: ID!
+	module: String
+	params: AWSJSON
+	custom_info: CustomInfo!
+}
+
+type Pool {
+	_id: ID!
+	not_bonded_tokens: String
+	bonded_tokens: String
+	custom_info: CustomInfo!
+}
+
+type Proposal {
+	_id: ID!
+	proposal_id: Int
+	content: Content
+	status: String
+	final_tally_result: FinalTallyResult
+	submit_time: AWSDateTime
+	deposit_end_time: AWSDateTime
+	total_deposit: [Coin]
+	voting_start_time: AWSDateTime
+	voting_end_time: AWSDateTime
+	tally: FinalTallyResult
+	deposit: [Deposit]
+	custom_info: CustomInfo!
 }
 
 type PublicKey {
-  key: String
-  type: String
+	type: String
+	key: String
 }
 
 type RedelegateEntry {
-  balance: String
-  redelegation_entry: RedelegationEntry
+	redelegation_entry: RedelegationEntry
+	balance: String
 }
 
 type Redelegation {
-  delegator_address: String
-  entries: [RedelegateEntry]
-  validator_dst_address: String
-  validator_src_address: String
+	delegator_address: String
+	validator_src_address: String
+	validator_dst_address: String
+	entries: [RedelegateEntry]
 }
 
 type RedelegationEntry {
-  completion_time: String
-  creation_height: String
-  initial_balance: String
-  shares_dst: String
+	creation_height: String
+	completion_time: String
+	initial_balance: String
+	shares_dst: String
 }
 
 type RedelegationResponse {
-  entries: [RedelegateEntry]
-  redelegation: Redelegation
+	redelegation: Redelegation
+	entries: [RedelegateEntry]
+}
+
+type Reward {
+	validator_address: String
+	amount: String
+	denom: String
 }
 
 type Signature {
-  block_id_flag: Int
-  signature: String
-  timestamp: String
-  validator_address: String
+	block_id_flag: Int
+	validator_address: String
+	timestamp: String
+	signature: String
 }
 
 type SignerInfo {
-  mode_info: ModeInfo
-  public_key: PublicKey
-  sequence: String
+	public_key: PublicKey
+	mode_info: ModeInfo
+	sequence: String
+}
+
+type SmartContracts {
+	_id: ID!
+	height: Int
+	code_id: Int
+	contract_name: String
+	contract_address: String
+	creator_address: String
+	contract_hash: String
+	tx_hash: String
+	custom_info: CustomInfo!
+}
+
+type Stats {
+	amount: Int
+	percentage: Float
+}
+
+type Supply {
+	_id: ID!
+	supply: [Coin]
+	custom_info: CustomInfo!
+}
+
+type Transaction {
+	_id: ID!
+	tx: TxInput
+	tx_response: TxResponse
+	custom_info: CustomInfo!
+	indexes: AWSJSON
 }
 
 type TxInput {
-  auth_info: AuthInfo
-  body: Body
-  signatures: [String]
+	body: Body
+	auth_info: AuthInfo
+	signatures: [String]
 }
 
 type TxResponse {
-  code: String
-  codespace: String
-  data: String
-  events: [Event]
-  gas_used: String
-  gas_wanted: String
-  height: Int
-  info: String
-  logs: [Log]
-  raw_log: String
-  timestamp: AWSDateTime
-  tx: AWSJSON
-  txhash: String
+	height: Int
+	txhash: String
+	codespace: String
+	code: String
+	data: String
+	raw_log: String
+	logs: [Log]
+	info: String
+	gas_wanted: String
+	gas_used: String
+	tx: AWSJSON
+	timestamp: AWSDateTime
+	events: [Event]
 }
 
 type TxResult {
-  code: Int
-  codespace: String
-  data: String
-  events: [Attribute]
-  gas_used: String
-  gas_wanted: String
-  info: String
-  log: String
+	code: Int
+	data: String
+	log: String
+	info: String
+	gas_wanted: String
+	gas_used: String
+	events: [Attribute]
+	codespace: String
 }
 
 type UnbondingResponse {
-  delegator_address: String
-  entries: [UndelegateEntry]
-  validator_address: String
+	delegator_address: String
+	validator_address: String
+	entries: [UndelegateEntry]
 }
 
 type UndelegateEntry {
-  balance: String
-  completion_time: String
-  creation_height: String
-  initial_balance: String
+	creation_height: String
+	completion_time: String
+	initial_balance: String
+	balance: String
+}
+
+type Validator {
+	_id: ID!
+	operator_address: String
+	consensus_pubkey: ConsensusPubkey
+	jailed: Boolean
+	status: String
+	tokens: String
+	delegator_shares: String
+	description: Description
+	unbonding_height: String
+	unbonding_time: String
+	commission: Commission
+	min_self_delegation: String
+	consensus_hex_address: String
+	custom_info: CustomInfo!
+}
+
+type Vote {
+	_id: ID!
+	voter_address: String
+	proposal_id: Int
+	answer: String
+	txhash: String
+	timestamp: AWSDateTime
+	height: Int
+	custom_info: CustomInfo!
 }

@@ -1,4 +1,4 @@
-# How to use HoroscopeGraphQL
+# How to use HoroscopeGraphQL from Client site
 Generate code files that you can use in your application.
 
 ## I. Integrate with your JavaScript app
@@ -91,76 +91,24 @@ https://aws-amplify.github.io
 
 **Information about request parameters and response data can be found [here](./config/schema.graphql#L6).**
 
-### 1. Account Auth
-Auth queries the auth information of an account.
+### 1. Account Info
+Account Info queries the information of an account.
 ```
 {
 	_id: String,
 	address: String,
-	account: {
+	account_auth: {
 		height: String,
-		result: {
-			type: String,
-			value: {
-				address: String,
-				public_key: {
-					type: String,
-					value: String,
-				},
-				account_number: String,
-				sequence: String,
-			}
-		}
+		result: Object
 	},
-	custom_info: {
-		chain_id: String,
-		chain_name: String,
-	},
-}
-```
-### 2. Account Balances
-AllBalances queries the balance of all coins for a single account.
-```
-{
-    _id: String,
-    address: String,
-    balances: [
+	account_balances: [
 		{
 			denom: String,
+			minimal_denom: String,
 			amount: String,
 		},
 	],
-    custom_info: {
-		chain_id: String,
-		chain_name: String,
-	},
-}
-```
-### 3. Account Spendable Balances
-SpendableBalances queries the spenable balance of all coins for a single account.
-```
-{
-	_id: String,
-	address: String,
-	spendable_balances: [
-		{
-			denom: String,
-			amount: String,
-		},
-	],
-	custom_info: {
-		chain_id: String,
-		chain_name: String,
-	},
-}
-```
-### 4. Account Delegations
-DelegatorDelegations queries all delegations of a given delegator address.
-```
-{
-	_id: String,
-	address: String,
-	delegation_responses: [
+	account_delegations: [
 		{
 			delegation: {
 				delegator_address: String,
@@ -173,19 +121,7 @@ DelegatorDelegations queries all delegations of a given delegator address.
 			},
 		},
 	],
-	custom_info: {
-		chain_id: String,
-		chain_name: String,
-	},
-}
-```
-### 5. Account Redelegations
-Redelegations queries redelegations of given address.
-```
-{
-	_id: String,
-	address: String,
-	redelegation_responses: [
+	account_redelegations: [
 		{
 			redelegation: {
 				delegator_address: String,
@@ -204,7 +140,7 @@ Redelegations queries redelegations of given address.
 				{
 					redelegation_entry: {
 						creation_height: String,
-						completion_time: String,
+						completion_time: Date,
 						initial_balance: String,
 						shares_dst: String,
 					},
@@ -213,30 +149,32 @@ Redelegations queries redelegations of given address.
 			],
 		},
 	],
-	custom_info: {
-		chain_id: String,
-		chain_name: String,
-	},
-}
-```
-### 6. Account Unbonds
-DelegatorUnbondingDelegations queries all unbonding delegations of a given delegator address.
-```
-{
-	_id: String,
-	address: String,
-	unbonding_responses: [
+	account_spendable_balances: [
+		{
+			denom: String,
+			minimal_denom: String,
+			amount: String,
+		},
+	],
+	account_unbonding: [
 		{
 			delegator_address: String,
 			validator_address: String,
 			entries: [
 				{
 					creation_height: String,
-					completion_time: String,
+					completion_time: Date,
 					initial_balance: String,
 					balance: String,
 				},
 			],
+		},
+	],
+	account_claimed_rewards: [
+		{
+			validator_address: String,
+			denom: String,
+			amount: String,
 		},
 	],
 	custom_info: {
@@ -245,7 +183,7 @@ DelegatorUnbondingDelegations queries all unbonding delegations of a given deleg
 	},
 }
 ```
-### 7. Block
+### 2. Block
 Block queries block data based on given requirements.
 ```
 {
@@ -314,7 +252,7 @@ Block queries block data based on given requirements.
 	},
 }
 ```
-### 8. Code Id
+### 3. Code Id
 Code Id queries code ids exist on network.
 ```
 {
@@ -331,7 +269,7 @@ Code Id queries code ids exist on network.
 	},
 }
 ```
-### 9. Community Pool
+### 4. Community Pool
 CommunityPool queries the community pool coins.
 ```
 {
@@ -348,7 +286,7 @@ CommunityPool queries the community pool coins.
 	},
 }
 ```
-### 10. CW20 Asset
+### 5. CW20 Asset
 CW20Asset queries tokens based on given requirements.
 ```
 {
@@ -376,7 +314,7 @@ CW20Asset queries tokens based on given requirements.
 	},
 }
 ```
-### 11. CW721 Asset
+### 6. CW721 Asset
 CW721Asset queries NFTs based on given requirements.
 ```
 {
@@ -407,7 +345,46 @@ CW721Asset queries NFTs based on given requirements.
 	},
 }
 ```
-### 12. Inflation
+### 7. Daily Tx Statistics
+Daily Tx Statistics queries the daily statistics of the network (daily txs, daily active accounts, v.v)
+```
+{
+	_id: String,
+    daily_txs: Number,
+    daily_active_addresses: Number,
+    unique_addresses: Number,
+    date: Date,
+	custom_info: {
+		chain_id: String,
+		chain_name: String,
+	},
+}
+```
+### 8. Delay Job
+Delay Job queries the jobs to update Account Info's data
+```
+{
+	_id: String,
+    content: Object,
+	type: { type: String },
+    expire_time: Date,
+	indexes: String,
+	custom_info: {
+		chain_id: String,
+		chain_name: String,
+	},
+}
+```
+### 9. IBC Denom
+IBC Denom queries the denom of other networks when executing an IBC transaction
+```
+{
+	_id: String,
+    hash: String,
+    denom: String,
+}
+```
+### 10. Inflation
 Inflation queries the inflation.
 ```
 {
@@ -419,7 +396,7 @@ Inflation queries the inflation.
 	},
 }
 ```
-### 13. Param
+### 11. Param
 Params queries the all type of params.
 ```
 {
@@ -432,7 +409,7 @@ Params queries the all type of params.
 	},
 }
 ```
-### 14. Pool
+### 12. Pool
 Pool queries the pool info.
 ```
 {
@@ -445,7 +422,7 @@ Pool queries the pool info.
 	},
 }
 ```
-### 15. Proposal
+### 13. Proposal
 Proposals queries all proposals based on given requirements.
 ```
 {
@@ -505,7 +482,25 @@ Proposals queries all proposals based on given requirements.
 	},
 }
 ```
-### 16. Supply
+### 14. Smart Contracts
+Smart Contracts queries the contracts instantiated on the network.
+```
+{
+	_id: String,
+	height: Number,
+    code_id: Number,
+    contract_name: String,
+    contract_address: String,
+    creator_address: String,
+    contract_hash: String,
+    tx_hash: String,
+	custom_info: {
+		chain_id: String,
+		chain_name: String,
+	},
+}
+```
+### 15. Supply
 TotalSupply queries the total supply of all coins.
 ```
 {
@@ -522,7 +517,7 @@ TotalSupply queries the total supply of all coins.
 	},
 }
 ```
-### 17. Transacion
+### 16. Transacion
 Transaction queries tx data based on given requirements.
 ```
 {
@@ -612,7 +607,7 @@ Transaction queries tx data based on given requirements.
 	},
 }
 ```
-### 18. Validator
+### 17. Validator
 Validator queries all validators based on given requirements.
 ```
 {
@@ -653,6 +648,23 @@ Validator queries all validators based on given requirements.
 		tombstoned: Boolean,
 		missed_blocks_counter: String,
 	},
+	custom_info: {
+		chain_id: String,
+		chain_name: String,
+	},
+}
+```
+### 18. Vote
+Vote queries the vote option of each validator for each proposal.
+```
+{
+	_id: String,
+	voter_address: String,
+	proposal_id: Number,
+	answer: String,
+	txhash: String,
+	timestamp: Date,
+	height: Number,
 	custom_info: {
 		chain_id: String,
 		chain_name: String,
